@@ -402,81 +402,88 @@
             100% { transform: scale(1); }
         }
 
-        /* ========================================== */
-        /* RESPONSIVE MEDIA QUERIES FOR MOBILE (HP)  */
-        /* ========================================== */
+       /* ===== MOBILE-ONLY ELEMENTS (hidden di desktop) ===== */
+        .menu-toggle, .sidebar-close, .sidebar-backdrop { display: none; }
+
+        /* ===== RESPONSIVE MOBILE ===== */
         @media (max-width: 768px) {
-            body {
-                overflow-y: auto;
-                height: auto;
-            }
+            body { width: 100%; height: auto; min-height: 100dvh; overflow-x: hidden; overflow-y: auto; }
 
-            .audit-bar {
-                font-size: 11px;
-                padding: 0 10px;
-                height: 35px;
-            }
+            /* Audit bar */
+            .audit-bar { position: sticky; top: 0; height: 36px; padding: 0 12px; font-size: 11px; gap: 8px; }
+            .audit-title { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .audit-label { display: none; }
+            .score-badge { flex-shrink: 0; padding: 3px 10px; }
 
-            .navbar-main {
-                padding: 0 12px;
+            /* Navbar */
+            .navbar-main { position: sticky; top: 36px; z-index: 90; height: 54px; padding: 0 12px; gap: 10px; }
+            .nav-left { flex: 1; min-width: 0; gap: 10px; }
+            .menu-toggle {
+                display: flex; align-items: center; justify-content: center;
+                width: 36px; height: 36px; flex-shrink: 0;
+                background: rgba(255,255,255,0.15); border: none; border-radius: 10px;
+                color: #fff; font-size: 18px; cursor: pointer;
             }
+            .brand-logo { font-size: 16px; flex-shrink: 0; }
+            .search-box { flex: 1; min-width: 0; width: auto; padding: 6px 10px; }
+            .search-box input { font-size: 12px; min-width: 0; }
+            .nav-right { gap: 12px; flex-shrink: 0; }
+            .nav-right > span:nth-child(1),
+            .nav-right > span:nth-child(3),
+            .nav-right > span:nth-child(4) { display: none; }
+            #ui-1 small { display: none; }
 
-            .search-box {
-                width: 110px;
-                padding: 4px 8px;
-            }
-
-            .search-box input {
-                font-size: 11px;
-            }
-
-            .app-body {
-                flex-direction: column;
-                height: auto;
-            }
-
-            /* Hidden Sidebar di HP biar gak semak */
+            /* Sidebar jadi drawer */
             .sidebar {
-                display: none;
+                position: fixed; top: 0; left: 0; bottom: 0;
+                width: 270px; max-width: 80vw; z-index: 150;
+                transform: translateX(-100%); transition: transform .28s ease;
+                overflow-y: auto; padding-top: 10px;
             }
+            .sidebar.open { transform: translateX(0); box-shadow: 8px 0 30px rgba(0,0,0,0.25); }
+            .sidebar-close {
+                display: block; align-self: flex-end; margin: 0 12px 6px; padding: 4px 8px;
+                background: none; border: none; font-size: 18px; color: #8d9498; cursor: pointer;
+            }
+            .sidebar-backdrop {
+                display: block; position: fixed; inset: 0; z-index: 140;
+                background: rgba(17,24,39,0.5); opacity: 0; pointer-events: none; transition: opacity .28s;
+            }
+            .sidebar-backdrop.show { opacity: 1; pointer-events: auto; }
 
-            .hero-header {
-                padding: 15px 15px 50px 15px;
-                flex-direction: column;
-                gap: 12px;
-            }
+            /* Layout */
+            .app-body { flex-direction: column; height: auto; }
+            .main-panel { flex: none; overflow: visible; }
 
-            .hero-buttons {
-                width: 100%;
-                justify-content: flex-start;
-            }
+            .hero-header { padding: 20px 16px 56px; flex-direction: column; gap: 14px; }
+            .hero-title h2 { font-size: 20px; }
+            .hero-buttons { width: 100%; }
+            #ui-4 { flex-wrap: wrap; }
 
             .content-cards {
-                padding: 0 15px 20px 15px;
-                grid-template-columns: 1fr;
-                gap: 15px;
+                padding: 0 14px 24px; margin-top: -40px; gap: 14px;
+                grid-template-columns: minmax(0, 1fr);
+            }
+            .second-row { grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+            #item-10 { grid-column: 1 / -1 !important; }
+            .card, .daily-sales-blue { padding: 16px; min-width: 0; }
+            #ui-3 > div:first-child { flex-wrap: wrap; gap: 10px; }
+
+            .circle-val { width: 52px; height: 52px; font-size: 15px; }
+            .circle-label { font-size: 11px; }
+
+            /* Modal jadi bottom sheet */
+            .modal { align-items: flex-end; }
+            .modal-card {
+                width: 100%; max-width: none; max-height: 85dvh; overflow-y: auto;
+                border-radius: 18px 18px 0 0;
+                padding: 20px 18px calc(20px + env(safe-area-inset-bottom));
             }
 
-            .second-row {
-                grid-column: span 1;
-                grid-template-columns: 1fr;
-            }
-
-            .modal-card, .instruction-box {
-                width: 90%;
-                max-width: 350px;
-                padding: 20px;
-            }
-
-            .circle-val {
-                width: 45px;
-                height: 45px;
-                font-size: 14px;
-            }
-
-            .circle-label {
-                font-size: 10px;
-            }
+            /* Overlay intro & selesai */
+            .instruction-box { width: calc(100% - 32px); max-width: 360px; max-height: 85dvh; overflow-y: auto; padding: 22px 18px; }
+            .congrats-overlay { padding: 16px; }
+            .congrats-overlay > div { width: 100%; padding: 24px !important; }
         }
     </style>
 </head>
@@ -484,13 +491,14 @@
 
     <!-- AUDIT SCORE BAR -->
     <div class="audit-bar">
-        <div><b>Atlantis Admin Dashboard:</b> Spot the 10 Heuristic Errors</div>
-        <div>Kesalahan Teridentifikasi & Diperbaiki: <span class="score-badge" id="score">0 / 10</span></div>
+        <div class="audit-title"><b>Atlantis Admin Dashboard:</b> Spot the 10 Heuristic Errors</div>
+        <div><span class="audit-label">Kesalahan Teridentifikasi & Diperbaiki: </span><span class="score-badge" id="score">0 / 10</span></div>
     </div>
 
     <!-- TOP NAVBAR -->
     <div class="navbar-main">
         <div class="nav-left">
+            <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Buka menu">☰</button>
             <div class="brand-logo">⚡ Atlantis</div>
             <!-- ITEM 7: FLEXIBILITY & EFFICIENCY OF USE (SEARCH BAR MISSING KEYBOARD SHORTCUT / ACTION) -->
             <div class="search-box" id="item-7" onclick="triggerError(7)">
@@ -519,7 +527,8 @@
     <div class="app-body">
         
         <!-- SIDEBAR -->
-        <div class="sidebar">
+        <div class="sidebar" id="sidebar">
+            <button class="sidebar-close" onclick="toggleSidebar()" aria-label="Tutup menu">✕</button>
             <div class="profile-section">
                 <div class="user-avatar" style="width:40px; height:40px; background:#1572e8; color:white; font-weight:bold;">HZ</div>
                 <div class="profile-info">
@@ -665,6 +674,7 @@
         </div>
     </div>
 
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
     <!-- INSTRUCTION OVERLAY -->
     <div class="instruction-overlay" id="instructionOverlay" onclick="hideInstruction()">
         <div class="instruction-box">
@@ -730,7 +740,7 @@
                 desc: "Widget User Statistics mengunci area chart tanpa memberikan kontrol rentang tanggal (filter date) atau tombol tutup/minimalisasi.",
                 fix: "Menyediakan opsi pilihan filter tanggal (Weekly/Monthly) dan tombol kontrol.",
                 repairedUI: `
-                    <div style="display:flex; justify-style:space-between; align-items:center;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
                         <div>
                             <div class="card-header-title">User Statistics</div>
                             <div class="card-sub" style="margin-bottom:0;">Filter: Last 7 Days</div>
@@ -800,7 +810,7 @@
                 fix: "Menjelaskan pesan kesalahan dengan bahasa ramah serta tombol 'Muat Ulang'.",
                 repairedUI: `
                     <div class="card-header-title">Total income & spend statistics</div>
-                    <div style="display:flex; justify-style:space-between; align-items:center; margin-bottom:10px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                         <span style="font-size:11px; color:#2bbd7e; font-weight:bold;">TOTAL INCOME: $9,782</span>
                         <button style="background:#1572e8; color:white; border:none; padding:3px 8px; border-radius:4px; font-size:10px; cursor:pointer;">🔄 Refresh Data</button>
                     </div>`
@@ -814,6 +824,11 @@
                     2026 © Atlantis Admin Template — <a href="#" style="color:#1572e8; text-decoration:none; font-weight:bold;">❓ Help Center & FAQ</a>`
             }
         };
+        
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebarBackdrop').classList.toggle('show');
+        }
 
         function hideInstruction() {
             document.getElementById('instructionOverlay').style.display = 'none';
@@ -853,6 +868,12 @@
                 }
             }
         }
+
+        document.querySelectorAll('.sidebar .nav-item').forEach(el => {
+            el.addEventListener('click', () => {
+                if (document.getElementById('sidebar').classList.contains('open')) toggleSidebar();
+            });
+        });
     </script>
 </body>
 </html>
