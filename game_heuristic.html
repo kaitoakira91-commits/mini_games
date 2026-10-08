@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atlantis Dashboard - Heuristic Audit</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background-color: #f4f5f8;
+            color: #495057;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* SCOREBAR AUDIT MODE */
+        .audit-bar {
+            height: 40px;
+            background: #111827;
+            color: #f9fafb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 13px;
+            z-index: 100;
+        }
+
+        .score-badge {
+            background: #0284c7;
+            padding: 3px 12px;
+            border-radius: 12px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        /* TOP NAVBAR ATLANTIS */
+        .navbar-main {
+            height: 56px;
+            background: #1572e8;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            color: white;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .brand-logo {
+            font-size: 20px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .search-box {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 6px 16px;
+            display: flex;
+            align-items: center;
+            width: 200px;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            font-size: 13px;
+            width: 100%;
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 14px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #1572e8;
+            font-size: 12px;
+        }
+
+        /* LAYOUT MAIN */
+        .app-body {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 96px);
+        }
+
+        /* SIDEBAR ATLANTIS */
+        .sidebar {
+            width: 230px;
+            background: #ffffff;
+            border-right: 1px solid #ebedf2;
+            display: flex;
+            flex-direction: column;
+            padding: 15px 0;
+        }
+
+        .profile-section {
+            padding: 0 20px 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #f1f1f1;
+            margin-bottom: 15px;
+        }
+
+        .profile-info {
+            font-size: 12px;
+        }
+
+        .profile-name {
+            font-weight: 700;
+            color: #2a2b36;
+        }
+
+        .profile-role {
+            color: #8d9498;
+            font-size: 11px;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            font-size: 13px;
+            color: #8d9498;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            background: #1572e8;
+            color: white;
+            font-weight: 600;
+            border-radius: 4px;
+            margin: 0 10px;
+            padding: 10px 10px;
+        }
+
+        .menu-category {
+            font-size: 10px;
+            font-weight: 700;
+            color: #a1a8ae;
+            padding: 12px 20px 4px 20px;
+            text-transform: uppercase;
+        }
+
+        /* CONTENT STAGE */
+        .main-panel {
+            flex: 1;
+            overflow-y: auto;
+            background: #f4f5f8;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* BLUE HERO HEADER */
+        .hero-header {
+            background: #1572e8;
+            color: white;
+            padding: 25px 30px 60px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .hero-title h2 {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .hero-title p {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-hero {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* CARDS GRID OVERLAY ON HERO */
+        .content-cards {
+            padding: 0 30px 30px 30px;
+            margin-top: -45px;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 15px rgba(0,0,0,0.05);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .card-header-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #2a2b36;
+            margin-bottom: 4px;
+        }
+
+        .card-sub {
+            font-size: 11px;
+            color: #8d9498;
+            margin-bottom: 20px;
+        }
+
+        /* STATS CIRCLES CARD */
+        .circles-row {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            text-align: center;
+        }
+
+        .circle-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .circle-val {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .c-orange { border: 4px solid #ffa534; color: #2a2b36; }
+        .c-green { border: 4px solid #2bbd7e; color: #2a2b36; }
+        .c-red { border: 4px solid #f3545d; color: #2a2b36; }
+
+        .circle-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #8d9498;
+        }
+
+        /* BAR CHART SIMULATION */
+        .bars-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            height: 90px;
+            margin-top: 15px;
+        }
+
+        .bar {
+            flex: 1;
+            background: #ffa534;
+            border-radius: 3px;
+        }
+
+        /* SECOND ROW CARDS */
+        .second-row {
+            grid-column: span 2;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .daily-sales-blue {
+            background: #1572e8;
+            color: white;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* MODAL EXPLANATION */
+        .modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .modal-card {
+            background: #1e293b;
+            color: #f8fafc;
+            border-radius: 12px;
+            padding: 24px;
+            width: 450px;
+            border: 1px solid #38bdf8;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);
+        }
+
+        /* INSTRUCTION OVERLAY */
+        .instruction-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(17, 24, 39, 0.85);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 300;
+            cursor: pointer;
+        }
+
+        .instruction-box {
+            background: #1e293b;
+            border: 1px solid #38bdf8;
+            color: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 460px;
+            text-align: center;
+        }
+
+        /* CONGRATS OVERLAY */
+        .congrats-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(17, 24, 39, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 400;
+            text-align: center;
+        }
+
+        /* REPAIRED FLASH ANIMATION */
+        .repaired-pulse {
+            animation: pulseGreen 0.6s ease-in-out;
+            outline: 2px solid #2bbd7e !important;
+        }
+
+        @keyframes pulseGreen {
+            0% { transform: scale(0.99); }
+            50% { transform: scale(1.01); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- AUDIT SCORE BAR -->
+    <div class="audit-bar">
+        <div><b>Atlantis Admin Dashboard:</b> Spot the 10 Heuristic Errors</div>
+        <div>Kesalahan Teridentifikasi & Diperbaiki: <span class="score-badge" id="score">0 / 10</span></div>
+    </div>
+
+    <!-- TOP NAVBAR -->
+    <div class="navbar-main">
+        <div class="nav-left">
+            <div class="brand-logo">⚡ Atlantis</div>
+            <!-- ITEM 7: FLEXIBILITY & EFFICIENCY OF USE (SEARCH BAR MISSING KEYBOARD SHORTCUT / ACTION) -->
+            <div class="search-box" id="item-7" onclick="triggerError(7)">
+                <span id="ui-7" style="display:flex; width:100%; align-items:center;">
+                    <span style="font-size:12px; margin-right:6px;">🔍</span>
+                    <input type="text" placeholder="Search ...">
+                </span>
+            </div>
+        </div>
+        <div class="nav-right">
+            <span>✉️</span>
+            <!-- ITEM 1: VISIBILITY OF SYSTEM STATUS (NOTIFICATION WITHOUT COUNT BADGE) -->
+            <span id="item-1" onclick="triggerError(1)" style="cursor:pointer; position:relative;">
+                <span id="ui-1">🔔 <small style="font-size:10px; opacity:0.7;">(Proses Latar Belakang...)</small></span>
+            </span>
+            <span>⚙️</span>
+            <span>📱</span>
+            <!-- ITEM 2: MATCH BETWEEN SYSTEM & REAL WORLD (PROFILE ROLE USE TECH CODE) -->
+            <div class="user-avatar" id="item-2" onclick="triggerError(2)">
+                <span id="ui-2">ADM</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP LAYOUT -->
+    <div class="app-body">
+        
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="profile-section">
+                <div class="user-avatar" style="width:40px; height:40px; background:#1572e8; color:white; font-weight:bold;">HZ</div>
+                <div class="profile-info">
+                    <div class="profile-name">Hizrian</div>
+                    <div class="profile-role">Administrator</div>
+                </div>
+            </div>
+
+            <div class="nav-menu">
+                <div class="nav-item active">🏠 Dashboard</div>
+                
+                <div class="menu-category">Components</div>
+                <div class="nav-item">🔷 Base</div>
+                <div class="nav-item">🗂️ Sidebar Layouts</div>
+                <div class="nav-item">📝 Forms</div>
+                
+                <!-- ITEM 6: RECOGNITION RATHER THAN RECALL (TABLE MENU ONLY CODE) -->
+                <div class="nav-item" id="item-6" onclick="triggerError(6)">
+                    <span id="ui-6">📊 TBL_MDL_901</span>
+                </div>
+
+                <div class="menu-category">Snippets</div>
+                <div class="nav-item">✉️ Email</div>
+            </div>
+        </div>
+
+        <!-- MAIN PANEL -->
+        <div class="main-panel">
+            
+            <!-- BLUE HERO HEADER -->
+            <div class="hero-header">
+                <div class="hero-title">
+                    <h2>Dashboard</h2>
+                    <p>Premium Bootstrap 4 Admin Dashboard</p>
+                </div>
+                
+                <!-- ITEM 4: CONSISTENCY & STANDARDS (MISMATCHED BUTTON STYLES) -->
+                <div class="hero-buttons" id="item-4" onclick="triggerError(4)">
+                    <div id="ui-4" style="display:flex; gap:8px;">
+                        <button class="btn-hero" style="border-radius:4px; text-transform:lowercase;">Manage</button>
+                        <button class="btn-hero" style="background:#f3545d; border:none; font-weight:bold;">ADD CUSTOMER</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENT CARDS GRID OVERLAY -->
+            <div class="content-cards">
+                
+                <!-- CARD 1: OVERALL STATISTICS -->
+                <!-- ITEM 8: AESTHETIC & MINIMALIST DESIGN (CLUTTERED CARD DECORATIONS) -->
+                <div class="card" id="item-8" onclick="triggerError(8)">
+                    <div id="ui-8">
+                        <div class="card-header-title">Overall statistics</div>
+                        <div class="card-sub">Daily information about statistics in system</div>
+                        
+                        <div class="circles-row">
+                            <div class="circle-item">
+                                <div class="circle-val c-orange">5</div>
+                                <div class="circle-label">New Users</div>
+                            </div>
+                            <div class="circle-item">
+                                <div class="circle-val c-green">36</div>
+                                <div class="circle-label">Sales</div>
+                            </div>
+                            <div class="circle-item">
+                                <div class="circle-val c-red">12</div>
+                                <div class="circle-label">Subscribers</div>
+                            </div>
+                        </div>
+                        <div style="font-size:9px; color:#f3545d; text-align:center; margin-top:8px;">★ PROMO PREMIUM ACTIVE ★</div>
+                    </div>
+                </div>
+
+                <!-- CARD 2: TOTAL INCOME & SPEND -->
+                <!-- ITEM 9: HELP USERS RECOGNIZE & RECOVER FROM ERRORS (CRYPTIC ERROR MESSAGE) -->
+                <div class="card" id="item-9" onclick="triggerError(9)">
+                    <div id="ui-9">
+                        <div class="card-header-title">Total income & spend statistics</div>
+                        <div style="font-size:11px; color:#f3545d; font-family:monospace; background:#fff0f1; padding:4px 8px; border-radius:4px; margin-bottom:10px;">
+                            ERR_DATA_FETCH_FAILED_0x009
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                            <div>
+                                <small style="color:#2bbd7e; font-size:10px; font-weight:bold;">TOTAL INCOME</small>
+                                <h3 style="color:#2a2b36; font-size:18px;">$9,782</h3>
+                            </div>
+                            <div class="bars-container" style="width:120px;">
+                                <div class="bar" style="height:40%;"></div>
+                                <div class="bar" style="height:70%;"></div>
+                                <div class="bar" style="height:30%;"></div>
+                                <div class="bar" style="height:90%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECOND ROW -->
+                <div class="second-row">
+                    
+                    <!-- ITEM 3: USER CONTROL & FREEDOM (USER STATISTICS CARD WITHOUT RANGE CONTROL / CLOSE) -->
+                    <div class="card" id="item-3" onclick="triggerError(3)">
+                        <div id="ui-3">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <div class="card-header-title">User Statistics</div>
+                                    <div class="card-sub" style="margin-bottom:0;">Live tracking active</div>
+                                </div>
+                                <div style="display:flex; gap:6px;">
+                                    <button style="font-size:10px; border:1px solid #ccc; background:white; padding:3px 8px; border-radius:10px;">Export</button>
+                                    <button style="font-size:10px; border:1px solid #ccc; background:white; padding:3px 8px; border-radius:10px;">Print</button>
+                                </div>
+                            </div>
+                            <div style="height:80px; background:#f8fafc; border:1px dashed #cbd5e1; margin-top:15px; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:12px;">
+                                📈 [ Chart Area Locked - No Filter Controls Available ]
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ITEM 5: ERROR PREVENTION (DAILY SALES CARD - INSTANT RESET BUTTON) -->
+                    <div class="daily-sales-blue card" id="item-5" onclick="triggerError(5)" style="background:#1572e8; border:none;">
+                        <div id="ui-5">
+                            <div>
+                                <div style="font-size:14px; font-weight:bold;">Daily Sales</div>
+                                <small style="opacity:0.8; font-size:11px;">March 25 - April 02</small>
+                            </div>
+                            <h2 style="font-size:24px; margin:15px 0;">$4,578.58</h2>
+                            <button style="background:#f3545d; color:white; border:none; padding:5px 10px; border-radius:4px; font-size:10px; cursor:pointer; width:100%;">
+                                ⚠️ Reset All Sales Data
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ITEM 10: HELP & DOCUMENTATION (FOOTER MISSING HELP CENTER LINK) -->
+                <div class="card" id="item-10" onclick="triggerError(10)" style="grid-column: span 2; text-align:center; padding:12px; color:#8d9498; font-size:11px;">
+                    <div id="ui-10">
+                        2026 © Atlantis Admin Template — System Version 4.0.2 (No Help / FAQ Links Provided)
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- INSTRUCTION OVERLAY -->
+    <div class="instruction-overlay" id="instructionOverlay" onclick="hideInstruction()">
+        <div class="instruction-box">
+            <h3 style="color:#38bdf8; margin-bottom:10px; font-size:18px;">🔎 Atlantis Dashboard Audit</h3>
+            <p style="font-size:13px; line-height:1.6; color:#cbd5e1; margin-bottom:20px;">
+                Antarmuka di balik layar adalah **Atlantis Admin Dashboard**. Di dalamnya terdapat **10 kesalahan UI/UX subtle** yang melanggar 10 Prinsip Heuristic Evaluation Nielsen.
+                <br><br>
+                <b>Tugas Audiens:</b> Temukan dan klik 10 kesalahan tersebut. Setelah diklik, UI akan **secara otomatis terperbaiki secara instan**!
+            </p>
+            <div style="background:#1572e8; color:white; padding:8px 18px; border-radius:20px; font-weight:bold; font-size:12px; display:inline-block;">
+                👆 Klik Di Mana Saja Untuk Memulai
+            </div>
+        </div>
+    </div>
+
+    <!-- EXPLANATION MODAL -->
+    <div class="modal" id="modal">
+        <div class="modal-card">
+            <h3 id="m-title" style="color:#f43f5e; margin-bottom:6px; font-size:16px;">Title</h3>
+            <div id="m-principle" style="background:#0f172a; color:#fbbf24; padding:3px 8px; border-radius:4px; font-size:11px; font-weight:bold; display:inline-block; margin-bottom:12px;">Principle</div>
+            <p id="m-desc" style="font-size:12px; color:#cbd5e1; margin-bottom:12px; line-height:1.5;">Desc</p>
+            <div id="m-fix" style="background:#064e3b; color:#34d399; padding:10px; border-radius:6px; font-size:12px; margin-bottom:16px;">Fix</div>
+            <button onclick="closeModal()" style="width:100%; background:#38bdf8; color:#0f172a; border:none; padding:8px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:12px;">Terapkan Perbaikan UI</button>
+        </div>
+    </div>
+
+    <!-- CONGRATS OVERLAY -->
+    <div class="congrats-overlay" id="congratsOverlay">
+        <div style="background:#1e293b; border:2px solid #2bbd7e; border-radius:16px; padding:36px; max-width:480px; color:white;">
+            <h2 style="font-size:28px; color:#2bbd7e; margin-bottom:10px;">🏆 AUDIT SELESAI! 🏆</h2>
+            <p style="font-size:13px; color:#cbd5e1; line-height:1.6; margin-bottom:20px;">
+                Selamat! Kamu telah berhasil mengidentifikasi dan memperbaiki **seluruh 10 pelanggaran Heuristic Evaluation** pada Atlantis Admin Dashboard!
+            </p>
+            <button onclick="location.reload()" style="background:#2bbd7e; color:#0f172a; border:none; padding:10px 20px; border-radius:8px; font-weight:bold; cursor:pointer;">
+                🔄 Ulangi Audit
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let activeId = null;
+        let foundStatus = {};
+
+        const heuristicData = {
+            1: {
+                title: "1. Tidak Ada Indikator Progres / Status",
+                principle: "1. Visibility of System Status",
+                desc: "Ikon notifikasi hanya menampilkan indikator samar tanpa jumlah notifikasi riil atau indikator progres sinkronisasi data yang jelas.",
+                fix: "Menampilkan badge angka merah jumlah notifikasi aktif secara realtime.",
+                repairedUI: `🔔 <span style="background:#f3545d; color:white; font-size:10px; border-radius:50%; padding:2px 6px; font-weight:bold;">3</span>`
+            },
+            2: {
+                title: "2. Penggunaan Singkatan / Kode Mesin",
+                principle: "2. Match Between System & Real World",
+                desc: "Avatar profil hanya menampilkan singkatan abstrak 'ADM' tanpa nama jelas pengguna atau peran sosialnya.",
+                fix: "Menampilkan foto avatar resmi atau inisial nama 'Hizrian Administrator'.",
+                repairedUI: `<span style="font-size:11px; font-weight:bold;">HZ</span>`
+            },
+            3: {
+                title: "3. Kurangnya Kontrol Filter / Keluar",
+                principle: "3. User Control & Freedom",
+                desc: "Widget User Statistics mengunci area chart tanpa memberikan kontrol rentang tanggal (filter date) atau tombol tutup/minimalisasi.",
+                fix: "Menyediakan opsi pilihan filter tanggal (Weekly/Monthly) dan tombol kontrol.",
+                repairedUI: `
+                    <div style="display:flex; justify-style:space-between; align-items:center;">
+                        <div>
+                            <div class="card-header-title">User Statistics</div>
+                            <div class="card-sub" style="margin-bottom:0;">Filter: Last 7 Days</div>
+                        </div>
+                        <select style="font-size:10px; border:1px solid #ccc; padding:2px 6px; border-radius:4px;"><option>Weekly</option><option>Monthly</option></select>
+                    </div>
+                    <div style="height:80px; background:#e0f2fe; border:1px solid #0284c7; margin-top:15px; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#0369a1; font-size:12px; font-weight:bold;">
+                        📈 [ Live Interactive Chart Active ]
+                    </div>`
+            },
+            4: {
+                title: "4. Ketidakseragaman Style Tombol",
+                principle: "4. Consistency & Standards",
+                desc: "Tombol 'Manage' dan 'ADD CUSTOMER' memiliki gaya huruf, warna latar, border-radius, dan ukuran yang bertabrakan.",
+                fix: "Menyelaraskan bentuk dan gaya visual tombol aksi sesuai Design System Atlantis.",
+                repairedUI: `
+                    <button class="btn-hero" style="border-radius:20px;">Manage</button>
+                    <button class="btn-hero" style="background:white; color:#1572e8; font-weight:bold; border-radius:20px;">Add Customer</button>`
+            },
+            5: {
+                title: "5. Aksi Fatal Tanpa Konfirmasi Peringatan",
+                principle: "5. Error Prevention",
+                desc: "Tombol 'Reset All Sales Data' dipasang di kartu Daily Sales yang dapat tertekan tidak sengaja tanpa adanya dialog konfirmasi.",
+                fix: "Menghapus tombol berbahaya dari widget utama atau memberikan dialog verifikasi keamanan.",
+                repairedUI: `
+                    <div>
+                        <div style="font-size:14px; font-weight:bold;">Daily Sales</div>
+                        <small style="opacity:0.8; font-size:11px;">March 25 - April 02</small>
+                    </div>
+                    <h2 style="font-size:24px; margin:15px 0;">$4,578.58</h2>
+                    <span style="font-size:10px; opacity:0.9;">🔒 Sales record secured & auto-backed up.</span>`
+            },
+            6: {
+                title: "6. Memaksa Pengguna Menghafal Kode ID",
+                principle: "6. Recognition Rather Than Recall",
+                desc: "Menu sidebar menampilkan kode teknis 'TBL_MDL_901' bukannya nama menu yang mudah dikenali seperti 'Tables Data'.",
+                fix: "Mengganti kode ID dengan nama menu berbahasa manusia yang ramah.",
+                repairedUI: `📋 Tables Data`
+            },
+            7: {
+                title: "7. Pencarian Tanpa Shortcut / Fleksibilitas",
+                principle: "7. Flexibility & Efficiency of Use",
+                desc: "Kolom pencarian tidak menyediakan indikator pintasan keyboard (misal: 'Ctrl + K') untuk pengguna mahir.",
+                fix: "Menambahkan indikator shortcut keyboard cepat 'Ctrl + K'.",
+                repairedUI: `
+                    <span style="font-size:12px; margin-right:6px;">🔍</span>
+                    <input type="text" placeholder="Search (Ctrl + K) ...">`
+            },
+            8: {
+                title: "8. Visual Clutter & Teks Distraksi",
+                principle: "8. Aesthetic & Minimalist Design",
+                desc: "Terdapat teks promosi yang tidak relevan ('★ PROMO PREMIUM ACTIVE ★') di dalam kartu statistik utama yang merusak konsentrasi.",
+                fix: "Menghapus elemen dekoratif mengganggu agar tata letak tetap bersih dan minimalis.",
+                repairedUI: `
+                    <div class="card-header-title">Overall statistics</div>
+                    <div class="card-sub">Daily information about statistics in system</div>
+                    <div class="circles-row">
+                        <div class="circle-item"><div class="circle-val c-orange">5</div><div class="circle-label">New Users</div></div>
+                        <div class="circle-item"><div class="circle-val c-green">36</div><div class="circle-label">Sales</div></div>
+                        <div class="circle-item"><div class="circle-val c-red">12</div><div class="circle-label">Subscribers</div></div>
+                    </div>`
+            },
+            9: {
+                title: "9. Kode Error Kaku Tanpa Solusi",
+                principle: "9. Help Users Recognize & Recover from Errors",
+                desc: "Sistem menampilkan kode error 'ERR_DATA_FETCH_FAILED_0x009' tanpa memberikan penjelasan tombol 'Refresh/Coba Lagi'.",
+                fix: "Menjelaskan pesan kesalahan dengan bahasa ramah serta tombol 'Muat Ulang'.",
+                repairedUI: `
+                    <div class="card-header-title">Total income & spend statistics</div>
+                    <div style="display:flex; justify-style:space-between; align-items:center; margin-bottom:10px;">
+                        <span style="font-size:11px; color:#2bbd7e; font-weight:bold;">TOTAL INCOME: $9,782</span>
+                        <button style="background:#1572e8; color:white; border:none; padding:3px 8px; border-radius:4px; font-size:10px; cursor:pointer;">🔄 Refresh Data</button>
+                    </div>`
+            },
+            10: {
+                title: "10. Tidak Ada Link Bantuan / FAQ",
+                principle: "10. Help & Documentation",
+                desc: "Halaman dashboard tidak menyediakan tautan Pusat Bantuan (*Help Center*), FAQ, atau dokumentasi panduan sistem.",
+                fix: "Menambahkan tautan Help Center & Documentation di bagian footer.",
+                repairedUI: `
+                    2026 © Atlantis Admin Template — <a href="#" style="color:#1572e8; text-decoration:none; font-weight:bold;">❓ Help Center & FAQ</a>`
+            }
+        };
+
+        function hideInstruction() {
+            document.getElementById('instructionOverlay').style.display = 'none';
+        }
+
+        function triggerError(id) {
+            if (foundStatus[id]) return;
+
+            activeId = id;
+            document.getElementById('m-title').innerText = heuristicData[id].title;
+            document.getElementById('m-principle').innerText = heuristicData[id].principle;
+            document.getElementById('m-desc').innerText = heuristicData[id].desc;
+            document.getElementById('m-fix').innerHTML = "💡 <b>Solusi Perbaikan:</b> " + heuristicData[id].fix;
+
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+
+            if (activeId && !foundStatus[activeId]) {
+                foundStatus[activeId] = true;
+                score++;
+                document.getElementById('score').innerText = score + " / 10";
+
+                // DYNAMIC REALTIME UI REPAIR
+                const itemElem = document.getElementById('item-' + activeId);
+                const uiElem = document.getElementById('ui-' + activeId);
+
+                uiElem.innerHTML = heuristicData[activeId].repairedUI;
+                itemElem.classList.add('repaired-pulse');
+
+                if (score === 10) {
+                    setTimeout(() => {
+                        document.getElementById('congratsOverlay').style.display = 'flex';
+                    }, 800);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
