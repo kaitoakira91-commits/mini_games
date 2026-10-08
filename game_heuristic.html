@@ -401,6 +401,83 @@
             50% { transform: scale(1.01); }
             100% { transform: scale(1); }
         }
+
+        /* ========================================== */
+        /* RESPONSIVE MEDIA QUERIES FOR MOBILE (HP)  */
+        /* ========================================== */
+        @media (max-width: 768px) {
+            body {
+                overflow-y: auto;
+                height: auto;
+            }
+
+            .audit-bar {
+                font-size: 11px;
+                padding: 0 10px;
+                height: 35px;
+            }
+
+            .navbar-main {
+                padding: 0 12px;
+            }
+
+            .search-box {
+                width: 110px;
+                padding: 4px 8px;
+            }
+
+            .search-box input {
+                font-size: 11px;
+            }
+
+            .app-body {
+                flex-direction: column;
+                height: auto;
+            }
+
+            /* Hidden Sidebar di HP biar gak semak */
+            .sidebar {
+                display: none;
+            }
+
+            .hero-header {
+                padding: 15px 15px 50px 15px;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .hero-buttons {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .content-cards {
+                padding: 0 15px 20px 15px;
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .second-row {
+                grid-column: span 1;
+                grid-template-columns: 1fr;
+            }
+
+            .modal-card, .instruction-box {
+                width: 90%;
+                max-width: 350px;
+                padding: 20px;
+            }
+
+            .circle-val {
+                width: 45px;
+                height: 45px;
+                font-size: 14px;
+            }
+
+            .circle-label {
+                font-size: 10px;
+            }
+        }
     </style>
 </head>
 <body>
