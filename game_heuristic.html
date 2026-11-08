@@ -8,190 +8,156 @@
 </head>
 <body>
 
-    <!-- AUDIT SCOREBAR & TIMER -->
-    <div class="audit-bar">
-        <div class="audit-title"><b>Atlantis Admin Dashboard:</b> Spot the 10 Heuristic Errors</div>
-        <div class="audit-stats">
-            <span>⏱️ Sisa Waktu: <b id="timer-display" style="color:#ffa534;">03:00</b></span>
-            <span><span class="audit-label">Kesalahan Diperbaiki: </span><span class="score-badge" id="score">0 / 10</span></span>
+    <!-- MAIN GAME PAGE CONTAINER -->
+    <div id="game-page">
+        <!-- AUDIT SCOREBAR & TIMER -->
+        <div class="audit-bar">
+            <div class="audit-title"><b>Atlantis Admin Dashboard:</b> Spot the 10 Heuristic Errors</div>
+            <div class="audit-stats">
+                <span>⏱️ Sisa Waktu: <b id="timer-display" style="color:#ffa534;">02:00</b></span>
+                <span><span class="audit-label">Kesalahan Diperbaiki: </span><span class="score-badge" id="score">0 / 10</span></span>
+            </div>
         </div>
-    </div>
 
-    <!-- TOP NAVBAR -->
-    <div class="navbar-main">
-        <div class="nav-left">
-            <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Buka menu">☰</button>
-            <div class="brand-logo">⚡ Atlantis</div>
-            <!-- ITEM 7: FLEXIBILITY & EFFICIENCY OF USE -->
-            <div class="search-box" id="item-7" onclick="triggerError(7)">
-                <span id="ui-7" style="display:flex; width:100%; align-items:center;">
-                    <span style="font-size:12px; margin-right:6px;">🔍</span>
-                    <input type="text" placeholder="Search ..." disabled>
+        <!-- TOP NAVBAR -->
+        <div class="navbar-main">
+            <div class="nav-left">
+                <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Buka menu">☰</button>
+                <div class="brand-logo">⚡ Atlantis</div>
+                <div class="search-box" id="item-7" onclick="triggerError(7)">
+                    <span id="ui-7" style="display:flex; width:100%; align-items:center;">
+                        <span style="font-size:12px; margin-right:6px;">🔍</span>
+                        <input type="text" placeholder="Search ..." disabled>
+                    </span>
+                </div>
+            </div>
+            <div class="nav-right">
+                <span>✉️</span>
+                <span id="item-1" onclick="triggerError(1)" style="cursor:pointer; position:relative;">
+                    <span id="ui-1">🔔 <small style="font-size:10px; opacity:0.7;">(Proses Latar Belakang...)</small></span>
                 </span>
-            </div>
-        </div>
-        <div class="nav-right">
-            <span>✉️</span>
-            <!-- ITEM 1: VISIBILITY OF SYSTEM STATUS -->
-            <span id="item-1" onclick="triggerError(1)" style="cursor:pointer; position:relative;">
-                <span id="ui-1">🔔 <small style="font-size:10px; opacity:0.7;">(Proses Latar Belakang...)</small></span>
-            </span>
-            <span>⚙️</span>
-            <span>📱</span>
-            <!-- ITEM 2: MATCH BETWEEN SYSTEM & REAL WORLD -->
-            <div class="user-avatar" id="item-2" onclick="triggerError(2)">
-                <span id="ui-2">ADM</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- MAIN APP LAYOUT -->
-    <div class="app-body">
-        
-        <!-- SIDEBAR -->
-        <div class="sidebar" id="sidebar">
-            <button class="sidebar-close" onclick="toggleSidebar()" aria-label="Tutup menu">✕</button>
-            <div class="profile-section">
-                <div class="user-avatar" style="width:40px; height:40px; background:#1572e8; color:white; font-weight:bold;">HZ</div>
-                <div class="profile-info">
-                    <div class="profile-name">Hizrian</div>
-                    <div class="profile-role">Administrator</div>
+                <span>⚙️</span>
+                <span>📱</span>
+                <div class="user-avatar" id="item-2" onclick="triggerError(2)">
+                    <span id="ui-2">ADM</span>
                 </div>
-            </div>
-
-            <div class="nav-menu">
-                <div class="nav-item active">🏠 Dashboard</div>
-                
-                <div class="menu-category">Components</div>
-                <div class="nav-item">🔷 Base</div>
-                <div class="nav-item">🗂️ Sidebar Layouts</div>
-                <div class="nav-item">📝 Forms</div>
-                
-                <!-- ITEM 6: RECOGNITION RATHER THAN RECALL -->
-                <div class="nav-item" id="item-6" onclick="triggerError(6)">
-                    <span id="ui-6">📊 TBL_MDL_901</span>
-                </div>
-
-                <div class="menu-category">Snippets</div>
-                <div class="nav-item">✉️ Email</div>
             </div>
         </div>
 
-        <!-- MAIN PANEL -->
-        <div class="main-panel">
-            
-            <!-- BLUE HERO HEADER -->
-            <div class="hero-header">
-                <div class="hero-title">
-                    <h2>Dashboard</h2>
-                    <p>Premium Bootstrap 4 Admin Dashboard</p>
-                </div>
-                
-                <!-- ITEM 4: CONSISTENCY & STANDARDS -->
-                <div class="hero-buttons" id="item-4" onclick="triggerError(4)">
-                    <div id="ui-4" style="display:flex; gap:8px;">
-                        <button class="btn-hero" style="border-radius:4px; text-transform:lowercase;">Manage</button>
-                        <button class="btn-hero" style="background:#f3545d; border:none; font-weight:bold;">ADD CUSTOMER</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CONTENT CARDS GRID OVERLAY -->
-            <div class="content-cards">
-                
-                <!-- CARD 1: OVERALL STATISTICS -->
-                <!-- ITEM 8: AESTHETIC & MINIMALIST DESIGN -->
-                <div class="card" id="item-8" onclick="triggerError(8)">
-                    <div id="ui-8">
-                        <div class="card-header-title">Overall statistics</div>
-                        <div class="card-sub">Daily information about statistics in system</div>
-                        
-                        <div class="circles-row">
-                            <div class="circle-item">
-                                <div class="circle-val c-orange">5</div>
-                                <div class="circle-label">New Users</div>
-                            </div>
-                            <div class="circle-item">
-                                <div class="circle-val c-green">36</div>
-                                <div class="circle-label">Sales</div>
-                            </div>
-                            <div class="circle-item">
-                                <div class="circle-val c-red">12</div>
-                                <div class="circle-label">Subscribers</div>
-                            </div>
-                        </div>
-                        <div style="font-size:9px; color:#f3545d; text-align:center; margin-top:8px;">★ PROMO PREMIUM ACTIVE ★</div>
+        <!-- MAIN APP LAYOUT -->
+        <div class="app-body">
+            <div class="sidebar" id="sidebar">
+                <button class="sidebar-close" onclick="toggleSidebar()" aria-label="Tutup menu">✕</button>
+                <div class="profile-section">
+                    <div class="user-avatar" style="width:40px; height:40px; background:#1572e8; color:white; font-weight:bold;">HZ</div>
+                    <div class="profile-info">
+                        <div class="profile-name">Hizrian</div>
+                        <div class="profile-role">Administrator</div>
                     </div>
                 </div>
 
-                <!-- CARD 2: TOTAL INCOME & SPEND -->
-                <!-- ITEM 9: HELP USERS RECOGNIZE & RECOVER FROM ERRORS -->
-                <div class="card" id="item-9" onclick="triggerError(9)">
-                    <div id="ui-9">
-                        <div class="card-header-title">Total income & spend statistics</div>
-                        <div style="font-size:11px; color:#f3545d; font-family:monospace; background:#fff0f1; padding:4px 8px; border-radius:4px; margin-bottom:10px;">
-                            ERR_DATA_FETCH_FAILED_0x009
-                        </div>
-                        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
-                            <div>
-                                <small style="color:#2bbd7e; font-size:10px; font-weight:bold;">TOTAL INCOME</small>
-                                <h3 style="color:#2a2b36; font-size:18px;">$9,782</h3>
-                            </div>
-                            <div class="bars-container" style="width:120px;">
-                                <div class="bar" style="height:40%;"></div>
-                                <div class="bar" style="height:70%;"></div>
-                                <div class="bar" style="height:30%;"></div>
-                                <div class="bar" style="height:90%;"></div>
-                            </div>
+                <div class="nav-menu">
+                    <div class="nav-item active">🏠 Dashboard</div>
+                    <div class="menu-category">Components</div>
+                    <div class="nav-item">🔷 Base</div>
+                    <div class="nav-item">🗂️ Sidebar Layouts</div>
+                    <div class="nav-item">📝 Forms</div>
+                    <div class="nav-item" id="item-6" onclick="triggerError(6)">
+                        <span id="ui-6">📊 TBL_MDL_901</span>
+                    </div>
+                    <div class="menu-category">Snippets</div>
+                    <div class="nav-item">✉️ Email</div>
+                </div>
+            </div>
+
+            <div class="main-panel">
+                <div class="hero-header">
+                    <div class="hero-title">
+                        <h2>Dashboard</h2>
+                        <p>Premium Bootstrap 4 Admin Dashboard</p>
+                    </div>
+                    <div class="hero-buttons" id="item-4" onclick="triggerError(4)">
+                        <div id="ui-4" style="display:flex; gap:8px;">
+                            <button class="btn-hero" style="border-radius:4px; text-transform:lowercase;">Manage</button>
+                            <button class="btn-hero" style="background:#f3545d; border:none; font-weight:bold;">ADD CUSTOMER</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- SECOND ROW -->
-                <div class="second-row">
-                    
-                    <!-- ITEM 3: USER CONTROL & FREEDOM -->
-                    <div class="card" id="item-3" onclick="triggerError(3)">
-                        <div id="ui-3">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="content-cards">
+                    <div class="card" id="item-8" onclick="triggerError(8)">
+                        <div id="ui-8">
+                            <div class="card-header-title">Overall statistics</div>
+                            <div class="card-sub">Daily information about statistics in system</div>
+                            <div class="circles-row">
+                                <div class="circle-item"><div class="circle-val c-orange">5</div><div class="circle-label">New Users</div></div>
+                                <div class="circle-item"><div class="circle-val c-green">36</div><div class="circle-label">Sales</div></div>
+                                <div class="circle-item"><div class="circle-val c-red">12</div><div class="circle-label">Subscribers</div></div>
+                            </div>
+                            <div style="font-size:9px; color:#f3545d; text-align:center; margin-top:8px;">★ PROMO PREMIUM ACTIVE ★</div>
+                        </div>
+                    </div>
+
+                    <div class="card" id="item-9" onclick="triggerError(9)">
+                        <div id="ui-9">
+                            <div class="card-header-title">Total income & spend statistics</div>
+                            <div style="font-size:11px; color:#f3545d; font-family:monospace; background:#fff0f1; padding:4px 8px; border-radius:4px; margin-bottom:10px;">
+                                ERR_DATA_FETCH_FAILED_0x009
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:flex-end;">
                                 <div>
-                                    <div class="card-header-title">User Statistics</div>
-                                    <div class="card-sub" style="margin-bottom:0;">Live tracking active</div>
+                                    <small style="color:#2bbd7e; font-size:10px; font-weight:bold;">TOTAL INCOME</small>
+                                    <h3 style="color:#2a2b36; font-size:18px;">$9,782</h3>
                                 </div>
-                                <div style="display:flex; gap:6px;">
-                                    <button style="font-size:10px; border:1px solid #ccc; background:white; padding:3px 8px; border-radius:10px;">Export</button>
-                                    <button style="font-size:10px; border:1px solid #ccc; background:white; padding:3px 8px; border-radius:10px;">Print</button>
+                                <div class="bars-container" style="width:120px;">
+                                    <div class="bar" style="height:40%;"></div>
+                                    <div class="bar" style="height:70%;"></div>
+                                    <div class="bar" style="height:30%;"></div>
+                                    <div class="bar" style="height:90%;"></div>
                                 </div>
-                            </div>
-                            <div style="height:80px; background:#f8fafc; border:1px dashed #cbd5e1; margin-top:15px; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:12px;">
-                                📈 [ Chart Area Locked - No Filter Controls Available ]
                             </div>
                         </div>
                     </div>
 
-                    <!-- ITEM 5: ERROR PREVENTION -->
-                    <div class="daily-sales-blue card" id="item-5" onclick="triggerError(5)" style="background:#1572e8; border:none;">
-                        <div id="ui-5">
-                            <div>
-                                <div style="font-size:14px; font-weight:bold;">Daily Sales</div>
-                                <small style="opacity:0.8; font-size:11px;">March 25 - April 02</small>
+                    <div class="second-row">
+                        <div class="card" id="item-3" onclick="triggerError(3)">
+                            <div id="ui-3">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <div>
+                                        <div class="card-header-title">User Statistics</div>
+                                        <div class="card-sub" style="margin-bottom:0;">Live tracking active</div>
+                                    </div>
+                                    <div style="display:flex; gap:6px;">
+                                        <button style="font-size:10px; border:1px solid #ccc; background:white; padding:3px 8px; border-radius:10px;">Export</button>
+                                        <button style="font-size:10px; border:1px solid #ccc; background:white; padding:3px 8px; border-radius:10px;">Print</button>
+                                    </div>
+                                </div>
+                                <div style="height:80px; background:#f8fafc; border:1px dashed #cbd5e1; margin-top:15px; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#94a3b8; font-size:12px;">
+                                    📈 [ Chart Area Locked - No Filter Controls Available ]
+                                </div>
                             </div>
-                            <h2 style="font-size:24px; margin:15px 0;">$4,578.58</h2>
-                            <button style="background:#f3545d; color:white; border:none; padding:5px 10px; border-radius:4px; font-size:10px; cursor:pointer; width:100%;">
-                                ⚠️ Reset All Sales Data
-                            </button>
+                        </div>
+
+                        <div class="daily-sales-blue card" id="item-5" onclick="triggerError(5)" style="background:#1572e8; border:none;">
+                            <div id="ui-5">
+                                <div>
+                                    <div style="font-size:14px; font-weight:bold;">Daily Sales</div>
+                                    <small style="opacity:0.8; font-size:11px;">March 25 - April 02</small>
+                                </div>
+                                <h2 style="font-size:24px; margin:15px 0;">$4,578.58</h2>
+                                <button style="background:#f3545d; color:white; border:none; padding:5px 10px; border-radius:4px; font-size:10px; cursor:pointer; width:100%;">
+                                    ⚠️ Reset All Sales Data
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                </div>
-
-                <!-- ITEM 10: HELP & DOCUMENTATION -->
-                <div class="card" id="item-10" onclick="triggerError(10)" style="grid-column: span 2; text-align:center; padding:12px; color:#8d9498; font-size:11px;">
-                    <div id="ui-10">
-                        2026 © Atlantis Admin Template — System Version 4.0.2 (No Help / FAQ Links Provided)
+                    <div class="card" id="item-10" onclick="triggerError(10)" style="grid-column: span 2; text-align:center; padding:12px; color:#8d9498; font-size:11px;">
+                        <div id="ui-10">
+                            2026 © Atlantis Admin Template — System Version 4.0.2 (No Help / FAQ Links Provided)
+                        </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -203,9 +169,9 @@
         <div class="instruction-box">
             <h3 style="color:#38bdf8; margin-bottom:10px; font-size:18px;">🔎 Atlantis Dashboard Audit</h3>
             <p style="font-size:13px; line-height:1.6; color:#cbd5e1; margin-bottom:16px;">
-                Antarmuka di balik layar adalah **Atlantis Admin Dashboard**. Terdapat **10 kesalahan UI/UX subtle** yang melanggar 10 Prinsip Heuristic Evaluation Nielsen.
+                Antarmuka di balik layar adalah <b>Atlantis Admin Dashboard</b>. Terdapat <b>10 kesalahan UI/UX subtle</b> yang melanggar 10 Prinsip Heuristic Evaluation Nielsen.
                 <br><br>
-                <b>Waktu kamu: 3 Menit!</b> Temukan dan klik seluruh 10 kesalahan tersebut.
+                ⏱️ <b>Waktu Kamu: 2 Menit!</b>
             </p>
             <input type="text" id="player-name-input" placeholder="Masukkan Nama Kamu..." class="player-input">
             <button onclick="startGame()" class="btn-start">
@@ -225,40 +191,42 @@
         </div>
     </div>
 
-    <!-- DASHBOARD / LEADERBOARD OVERLAY (DITAMPILKAN SETELAH SELESAI) -->
-    <div class="congrats-overlay" id="congratsOverlay">
-        <div class="dashboard-card">
-            <h2 id="congrats-title" style="font-size:24px; color:#2bbd7e; margin-bottom:6px;">🏆 AUDIT SELESAI! 🏆</h2>
-            <p id="congrats-subtitle" style="font-size:13px; color:#cbd5e1; margin-bottom:16px;">
-                Hasil evaluasi heuristic kamu telah dicatat ke dashboard!
-            </p>
-
-            <div class="leaderboard-section">
-                <h4 style="color:#38bdf8; margin-bottom:10px; text-align:left;">📊 Dashboard Player yang Sudah Join</h4>
-                <div class="table-container">
-                    <table class="leaderboard-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Nama Player</th>
-                                <th>Skor</th>
-                                <th>Sisa Waktu</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="leaderboard-body">
-                            <!-- Data player akan dirender via JS -->
-                        </tbody>
-                    </table>
+    <!-- DASHBOARD PAGE (SEPARATE FULL PAGE, NON-POPUP) -->
+    <div class="dashboard-page" id="dashboardPage">
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <div>
+                    <h2 style="color:#38bdf8; font-size:24px;">📊 Dashboard Pemain & Hasil Audit</h2>
+                    <p style="color:#94a3b8; font-size:13px; margin-top:4px;" id="dashboard-welcome-msg">Rekapitulasi seluruh player yang telah berpartisipasi.</p>
+                </div>
+                <div id="admin-indicator" style="display:none; background:#f43f5e; color:white; padding:4px 12px; border-radius:12px; font-size:11px; font-weight:bold;">
+                    🔑 Mode Admin Active
                 </div>
             </div>
 
-            <div style="display:flex; gap:10px; margin-top:20px;">
-                <button onclick="location.reload()" style="flex:1; background:#2bbd7e; color:#0f172a; border:none; padding:10px; border-radius:8px; font-weight:bold; cursor:pointer;">
-                    🔄 Main Lagi
+            <div class="table-container">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nama Player</th>
+                            <th>Skor Ditemukan</th>
+                            <th>Sisa Waktu</th>
+                            <th>Status Pekerjaan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        <!-- Rendered by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="dashboard-actions">
+                <button onclick="reloadGame()" class="btn-action btn-reload">
+                    🎮 Halaman Utam / Main Lagi
                 </button>
-                <button onclick="clearLeaderboard()" style="background:#f3545d; color:white; border:none; padding:10px 14px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:12px;">
-                    🗑️ Reset Data Player
+                <button id="admin-reset-btn" onclick="clearLeaderboard()" class="btn-action btn-reset" style="display:none;">
+                    🗑️ Reset Data Player (Admin Only)
                 </button>
             </div>
         </div>
