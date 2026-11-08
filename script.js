@@ -2,11 +2,14 @@ let score = 0;
 let activeId = null;
 let foundStatus = {};
 
-// TIMER CONFIG (180 detik = 3 Menit)
-let timeLeft = 180;
+// TIMER CONFIG: 120 Detik (2 Menit)
+let timeLeft = 120;
 let timerInterval = null;
 let currentPlayerName = "Player";
 let gameStarted = false;
+let isAdminMode = false;
+
+const ADMIN_KEY = "Akira17#*";
 
 const heuristicData = {
     1: {
@@ -119,15 +122,29 @@ function toggleSidebar() {
     document.getElementById('sidebarBackdrop').classList.toggle('show');
 }
 
-// MULAI GAME & TIMER
 function startGame() {
     const inputVal = document.getElementById('player-name-input').value.trim();
-    if (inputVal !== "") {
-        currentPlayerName = inputVal;
+    if (inputVal === "") {
+        alert("Masukkan nama terlebih dahulu!");
+        return;
     }
-    
+
+    currentPlayerName = inputVal;
+
+    // CEK APAKAH USER ADALAH ADMIN
+    if (currentPlayerName === ADMIN_KEY) {
+        isAdminMode = true;
+        document.getElementById('instructionOverlay').style.display = 'none';
+        openDashboard();
+        return;
+    }
+
+    // USER BIASA
     document.getElementById('instructionOverlay').style.display = 'none';
     gameStarted = true;
+    
+    // Simpan status awal "Sedang Mengerjakan"
+    saveOrUpdatePlayerStatus(currentPlayerName, 0, 120, 'Working');
     startTimer();
 }
 
@@ -139,7 +156,7 @@ function startTimer() {
         
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
-            finishGame(false); // Game over (waktu habis)
+            finishGame(false); // Time out
         }
     }, 1000);
 }
@@ -147,9 +164,8 @@ function startTimer() {
 function updateTimerDisplay() {
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
-    const formattedMinutes = String(minutes).padStart(2, '0');
-    const formattedSeconds = String(seconds).padStart(2, '0');
-    document.getElementById('timer-display').innerText = `${formattedMinutes}:${formattedSeconds}`;
+    document.getElementById('timer-display').innerText = 
+        `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
 
 function triggerError(id) {
@@ -172,61 +188,66 @@ function closeModal() {
         score++;
         document.getElementById('score').innerText = score + " / 10";
 
-        // DYNAMIC REALTIME UI REPAIR
         const itemElem = document.getElementById('item-' + activeId);
         const uiElem = document.getElementById('ui-' + activeId);
 
         uiElem.innerHTML = heuristicData[activeId].repairedUI;
         itemElem.classList.add('repaired-pulse');
 
+        // Update skor sementara di background
+        saveOrUpdatePlayerStatus(currentPlayerName, score, timeLeft, 'Working');
+
         if (score === 10) {
             clearInterval(timerInterval);
             setTimeout(() => {
-                finishGame(true); // Player berhasil selesaikan semua
+                finishGame(true);
             }, 600);
         }
     }
 }
 
-// SELESAI GAME & DAFTAR DASHBOARD LEADERBOARD
 function finishGame(isWin) {
-    savePlayerData(currentPlayerName, score, timeLeft, isWin);
-    renderLeaderboard();
-
-    const titleEl = document.getElementById('congrats-title');
-    const subEl = document.getElementById('congrats-subtitle');
-
-    if (isWin) {
-        titleEl.innerText = "🏆 AUDIT SELESAI! 🏆";
-        titleEl.style.color = "#2bbd7e";
-        subEl.innerText = `Selamat ${currentPlayerName}! Kamu berhasil menemukan seluruh 10 kesalahan heuristic!`;
-    } else {
-        titleEl.innerText = "⏳ WAKTU HABIS! ⏰";
-        titleEl.style.color = "#f3545d";
-        subEl.innerText = `Waktu habis, ${currentPlayerName}! Kamu berhasil mengidentifikasi ${score} dari 10 kesalahan.`;
-    }
-
-    document.getElementById('congratsOverlay').style.display = 'flex';
+    saveOrUpdatePlayerStatus(currentPlayerName, score, timeLeft, isWin ? 'Complete' : 'Time Out');
+    openDashboard();
 }
 
-// LOCALSTORAGE LEADERBOARD MANAGEMENT
-function savePlayerData(name, score, timeRemaining, isWin) {
+function openDashboard() {
+    document.getElementById('dashboardPage').style.display = 'flex';
+    
+    if (isAdminMode) {
+        document.getElementById('admin-indicator').style.display = 'block';
+        document.getElementById('admin-reset-btn').style.display = 'inline-block';
+        document.getElementById('dashboard-welcome-msg').innerText = "Selamat Datang Admin (Akira17#*). Berikut seluruh progres player.";
+    } else {
+        document.getElementById('admin-indicator').style.display = 'none';
+        document.getElementById('admin-reset-btn').style.display = 'none';
+        document.getElementById('dashboard-welcome-msg').innerText = `Halo ${currentPlayerName}, berikut adalah rekap hasil game seluruh pemain.`;
+    }
+
+    renderLeaderboard();
+}
+
+function saveOrUpdatePlayerStatus(name, score, timeRemaining, status) {
     let players = JSON.parse(localStorage.getItem('heuristic_game_players') || '[]');
     
     const minutes = Math.floor(timeRemaining / 60);
     const seconds = timeRemaining % 60;
     const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
-    players.push({
+    const existingIndex = players.findIndex(p => p.name === name);
+
+    const playerData = {
         name: name,
         score: score,
         time: formattedTime,
-        status: isWin ? 'Complete' : 'Time Out',
-        timestamp: new Date().getTime()
-    });
+        status: status
+    };
 
-    // Urutkan: Skor tertinggi dulu, lalu sisa waktu terbanyak
-    players.sort((a, b) => b.score - a.score);
+    if (existingIndex !== -1) {
+        players[existingIndex] = playerData;
+    } else {
+        players.push(playerData);
+    }
 
     localStorage.setItem('heuristic_game_players', JSON.stringify(players));
 }
@@ -237,29 +258,43 @@ function renderLeaderboard() {
     tbody.innerHTML = '';
 
     if (players.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b;">Belum ada player yang join.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b; padding:20px;">Belum ada player yang join.</td></tr>`;
         return;
     }
 
     players.forEach((p, idx) => {
-        const badgeClass = p.status === 'Complete' ? 'badge-complete' : 'badge-timeout';
+        let badgeHTML = '';
+        if (p.status === 'Working') {
+            badgeHTML = `<span class="badge-status badge-working">⏳ Sedang Mengerjakan</span>`;
+        } else if (p.status === 'Complete') {
+            badgeHTML = `<span class="badge-status badge-complete">✅ Complete (10/10)</span>`;
+        } else {
+            badgeHTML = `<span class="badge-status badge-timeout">⏰ Time Out</span>`;
+        }
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td><b>${idx + 1}</b></td>
             <td style="font-weight:bold; color:#f8fafc;">${p.name}</td>
-            <td><span style="color:#ffa534; font-weight:bold;">${p.score}</span> / 10</td>
+            <td><span style="color:#ffa534; font-weight:bold;">${p.score}</span> / 10 Kesalahan</td>
             <td>${p.time}</td>
-            <td><span class="badge-status ${badgeClass}">${p.status}</span></td>
+            <td>${badgeHTML}</td>
         `;
         tbody.appendChild(tr);
     });
 }
 
 function clearLeaderboard() {
-    if (confirm("Apakah kamu yakin ingin menghapus seluruh data player di dashboard?")) {
+    if (!isAdminMode) return;
+    
+    if (confirm("⚠️ Admin Konfirmasi: Hapus seluruh data riwayat player dari dashboard?")) {
         localStorage.removeItem('heuristic_game_players');
         renderLeaderboard();
     }
+}
+
+function reloadGame() {
+    location.reload();
 }
 
 document.querySelectorAll('.sidebar .nav-item').forEach(el => {
