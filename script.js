@@ -7,6 +7,7 @@ let timeLeft = 120;
 let timerInterval = null;
 let currentPlayerName = "Player";
 let gameStarted = false;
+let leaderboardUnsubscribe = null;
 let isAdminMode = false;
 
 const ADMIN_KEY = "Akira17#*";
@@ -227,69 +228,131 @@ function openDashboard() {
     renderLeaderboard();
 }
 
-function saveOrUpdatePlayerStatus(name, score, timeRemaining, status) {
-    let players = JSON.parse(localStorage.getItem('heuristic_game_players') || '[]');
-    
-    const minutes = Math.floor(timeRemaining / 60);
-    const seconds = timeRemaining % 60;
-    const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+async function saveOrUpdatePlayerStatus(name, score, timeRemaining, status) {
+    try {
+        const user = await window.firebaseReady;
 
-    const existingIndex = players.findIndex(p => p.name === name);
+        const { db, ref, set } = window.firebaseServices;
 
-    const playerData = {
-        name: name,
-        score: score,
-        time: formattedTime,
-        status: status
-    };
+        const minutes = Math.floor(timeRemaining / 60);
+        const seconds = timeRemaining % 60;
 
-    if (existingIndex !== -1) {
-        players[existingIndex] = playerData;
-    } else {
-        players.push(playerData);
+        const formattedTime =
+            `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+        const playerData = {
+            name: name,
+            score: score,
+            time: formattedTime,
+            status: status
+        };
+
+        await set(ref(db, `players/${user.uid}`), playerData);
+
+        console.log("Data pemain berhasil disimpan ke Firebase!");
+
+    } catch (error) {
+        console.error("Gagal menyimpan data pemain:", error);
     }
-
-    localStorage.setItem('heuristic_game_players', JSON.stringify(players));
 }
 
 function renderLeaderboard() {
-    const players = JSON.parse(localStorage.getItem('heuristic_game_players') || '[]');
+    if (leaderboardUnsubscribe) return;
+
+    const { db, ref, onValue } = window.firebaseServices;
+
+    leaderboardUnsubscribe = onValue(
+        ref(db, "players"),
+
+        (snapshot) => {
+            const data = snapshot.val() || {};
+
+            const players = Object.values(data);
+
+            // Urutkan berdasarkan skor tertinggi
+            players.sort((a, b) => b.score - a.score);
+
+            displayLeaderboard(players);
+        },
+
+        (error) => {
+            console.error("Gagal mengambil leaderboard:", error);
+        }
+    );
+}
+
+function displayLeaderboard(players) {
     const tbody = document.getElementById('leaderboard-body');
+
     tbody.innerHTML = '';
 
     if (players.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b; padding:20px;">Belum ada player yang join.</td></tr>`;
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" style="text-align:center; color:#64748b; padding:20px;">
+                    Belum ada player yang join.
+                </td>
+            </tr>
+        `;
         return;
     }
 
     players.forEach((p, idx) => {
         let badgeHTML = '';
+
         if (p.status === 'Working') {
-            badgeHTML = `<span class="badge-status badge-working">⏳ Sedang Mengerjakan</span>`;
+            badgeHTML = '<span class="badge-status badge-working">⏳ Sedang Mengerjakan</span>';
         } else if (p.status === 'Complete') {
-            badgeHTML = `<span class="badge-status badge-complete">✅ Complete (10/10)</span>`;
+            badgeHTML = '<span class="badge-status badge-complete">✅ Complete (10/10)</span>';
         } else {
-            badgeHTML = `<span class="badge-status badge-timeout">⏰ Time Out</span>`;
+            badgeHTML = '<span class="badge-status badge-timeout">⏰ Time Out</span>';
         }
 
         const tr = document.createElement('tr');
+
         tr.innerHTML = `
             <td><b>${idx + 1}</b></td>
-            <td style="font-weight:bold; color:#f8fafc;">${p.name}</td>
+            <td class="player-name-cell"></td>
             <td><span style="color:#ffa534; font-weight:bold;">${p.score}</span> / 10 Kesalahan</td>
-            <td>${p.time}</td>
+            <td></td>
             <td>${badgeHTML}</td>
         `;
+
+        // Nama pemain ditampilkan sebagai teks, bukan HTML
+        tr.querySelector('.player-name-cell').textContent = p.name;
+        tr.children[3].textContent = p.time;
+
+        tr.querySelector('.player-name-cell').style.fontWeight = 'bold';
+        tr.querySelector('.player-name-cell').style.color = '#f8fafc';
+
         tbody.appendChild(tr);
     });
 }
 
-function clearLeaderboard() {
-    if (!isAdminMode) return;
-    
-    if (confirm("⚠️ Admin Konfirmasi: Hapus seluruh data riwayat player dari dashboard?")) {
-        localStorage.removeItem('heuristic_game_players');
-        renderLeaderboard();
+async function clearLeaderboard() {
+    if (!isAdminMode) {
+        alert("Akses ditolak!");
+        return;
+    }
+
+    const confirmation = confirm(
+        "Yakin ingin menghapus SEMUA data pemain?"
+    );
+
+    if (!confirmation) return;
+
+    try {
+        const { db, ref, set } = window.firebaseServices;
+
+        await set(ref(db, "players"), null);
+
+        alert("Leaderboard berhasil direset!");
+
+        console.log("Semua data pemain berhasil dihapus.");
+
+    } catch (error) {
+        console.error("Gagal mereset leaderboard:", error);
+        alert("Gagal menghapus data pemain!");
     }
 }
 
